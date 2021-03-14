@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  labels:
+    app: airflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airflow
+  updateStrategy:
+    type: RollingUpdate
+  podManagementPolicy: Parallel
+  serviceName: airflow
+  template:
+    metadata:
+      labels:
+        app: airflow
+        tier: postgres
+    spec:
+      serviceAccount: airflow
+      imagePullSecrets:
+        - name: gcr-puller
+      securityContext:
+        runAsUser: 0
+      containers:
+      - name: postgres
+        env:
+        - name: "POSTGRES_DB"
+          valueFrom:
+            configMapKeyRef:
+              key: "POSTGRES_DB"
+              name: "postgres-configmap"
+        - name: "POSTGRES_USER"
+          valueFrom:
+            configMapKeyRef:
+              key: "POSTGRES_USER"
+              name: "postgres-configmap"
+        - name: "POSTGRES_PASSWORD"
+          valueFrom:
+            configMapKeyRef:
+              key: "POSTGRES_PASSWORD"
+              name: "postgres-configmap"
+        image: us.gcr.io/de-exam-kansinee/postgres:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5432
+          name: postgres
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgres/data
+      restartPolicy: Always
+      volumes:
+      - emptyDir: {}
+        name: data

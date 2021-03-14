@@ -1,0 +1,49 @@
+namespace: airflow
+commonLabels:
+  app: airflow
+  envtier: staging
+bases:
+  - ../../base
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+  - name: airflow-configmap
+    files:
+      - config/airflow.cfg
+  - name: postgres-configmap
+    envs: 
+      - config/postgres_config.properties
+
+secretGenerator:
+  - name: airflow-webserver-iap
+    envs: 
+      - config/iap-webserver.properties
+    type: Opaque
+  
+  - name: airflow-config-files
+    files:
+      - resource/webserver_config.py
+      - resource/create-connection.sh
+    type: Opaque
+
+  - name: service-account
+    files:
+      - resource/de-exam-kansinee-airflow.json
+      - resource/de-exam-kansinee-gcr-puller.json
+    type: Opaque
+
+  - name: airflow-tls
+    files:
+      - resource/tls.crt
+      - resource/tls.key
+    type: kubernetes.io/tls
+
+patchesJson6902:
+  - target:
+      group: extensions    
+      version: v1beta1
+      kind: Ingress
+      name: airflow-webserver-ingress
+    path: config/ingress_webserver.yaml

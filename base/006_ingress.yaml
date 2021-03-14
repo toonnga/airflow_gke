@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: airflow-webserver-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: airflow-gke-private-static-ip
+  labels:
+    app: airflow
+    tier: webserver
+spec:
+  backend:
+    serviceName: airflow-webserver-service
+    servicePort: 8080
+  tls:
+    - secretName: airflow-tls
+  rules:
+  - http:
+      paths:
+      - path: /*
+        backend:
+          serviceName: airflow-webserver-service
+          servicePort: 8080
+    host: "REPLACE"
+
+
+
+  

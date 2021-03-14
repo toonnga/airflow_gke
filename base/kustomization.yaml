@@ -1,0 +1,15 @@
+# kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# list of Resource Config to be Applied
+resources:
+  - 001_serviceaccount.yaml
+  - 002_pvc.yaml
+  - 003_sts_postgres.yaml
+  - 003_sts_scheduler.yaml
+  - 003_sts_webserver.yaml
+  - 004_backend.yaml
+  - 005_service.yaml
+  - 006_ingress.yaml
+  

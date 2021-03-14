@@ -1,0 +1,1 @@
+gsutil -m cp -R gs://de-exam-kansinee-airflow-gke/overlays .
