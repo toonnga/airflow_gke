@@ -13,6 +13,7 @@ Airflow-GKE project for deploy airflow and components into GKE.
 ## base - airflow deployment
 
 run airflow in LocalExecutor
+    
     - postgres - db for airflow
     - airflow webserver
     - airlfow scheduler
